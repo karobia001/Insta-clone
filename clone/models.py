@@ -1,77 +1,14 @@
 from django.db import models
 from django.utils import timezone
-
+from tinymce.models import HTMLField
+from pyuploadcare.dj.models import ImageField
 # Create your models here.
 class Profile(models.Model):
-    profile_picture =ImageField(blank=True,)
-    bio = HTMLField()
-    user = models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
-
-    def save_profile(self):
-        self.save()
-    
-    @classmethod
-    def search_profile(cls, name):
-        profile = Profile.objects.filter(user__username__icontains = name)
-        return profile
-    
-    @classmethod
-    def get_by_id(cls, id):
-        profile = Profile.objects.get(user = id)
-        return profile
-
-    @classmethod
-    def filter_by_id(cls, id):
-        profile = Profile.objects.filter(user = id).first()
-        return profile
-    
-    
-class Image(models):
-    # image_pic = models.ImageField(upload_to = 'p/', default='Image')
-    photo = ImageField(blank=True)
-    image_name = models.CharField(max_length = 50)
-    image_caption = HTMLField(blank=True)
-    post_date = models.DateTimeField(auto_now=True)
-    likes = models.BooleanField(default=False)
-    profile = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ('-post_date',)
-
-    def save_image(self):
-        self.save()
-    
-    @classmethod
-    def update_caption(cls, update):
-        pass
-    
-    @classmethod
-    def get_image_id(cls, id):
-        image = Image.objects.get(pk=id)
-        return image
-    
-    @classmethod
-    def get_profile_images(cls, profile):
-        images = Image.objects.filter(profile__pk = profile)
-        return images
-    
-    @classmethod
-    def get_all_images(cls):
-        images = Image.objects.all()
-        return images
-
-
-class Comments(models.Model):
-    comment = HTMLField()
-    posted_on = models.DateTimeField(auto_now=True)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def save_comment(self):
-        self.save()
-    
-    @classmethod
-    def get_comments_by_images(cls, id):
-        comments = Comments.objects.filter(image__pk = id)
-        return comments
-        
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    website = models.CharField(max_length=30, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    email = models.EmailField()
+    phone_number = PhoneNumberField(max_length=10, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateTimeField(null=True, blank=True)
+    profile_pic = models.ImageField(upload_to = 'photos/',blank=True)
